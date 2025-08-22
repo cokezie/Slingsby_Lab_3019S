@@ -1,9 +1,10 @@
 ---
-title: "Task5"
-author: "Muneer"
+title: "Lab_README_File"
+author: "Chi Chi Okezie"
 date: "2025-08-12"
 output: rmarkdown::github_document
 ---
+
 # Practical output:  Master script
 
 ## Source functions, get data and plot
@@ -32,6 +33,8 @@ plot.NDVI(dat)
 > Question 1: This plot suggests that Fynbos greenness (NDVI) as observed from satellite saturates with time since fire. Why do you think it saturates rather than increasing linearly with time? (3 marks)
 
 <br>
+
+**I think that the Fynbos greenness (NDVI) as observed from the satellite saturates, leveling off around before reaching 0.7 as a reflection of the limitations of utilizing NDVI and it is also indicative of the nature of Fynbos. As we talked about in class, the NDVI index measures the difference between near-infrared and red light to build a ratio that classifies land cover on scale from 0-1.0. Near-infrared light is reflected with higher chlorophyll content detailing the health and “greenness” of the vegetation. As Fynbos plants vary in colors they're not always going to be "green" in the way that would be picked up and measured by the satellite so at some point once most of the land is covered and thus most of the ground is covered by the canopy whatever is the total measure of chlorophyll content from the canopy cover will reflect the greenness of the very surface of the vegetation and this doesn't change much once established. Thus,  failing to account for the continuously changing ground level of the plants. By using these units,canopy cover and NDVI, does not allow for real encapsulation of all of the development that is happening within the plants over this time. Thus, once the satellite  cannot detect changes in the canopy cover of the plants, the NDVI levels, even despite changes on the ground level that we cannot see.  ** 
 
 ## Fit models using Non-linear Least Squares (NLS)
 
@@ -100,6 +103,8 @@ Lots more parameters...
 
 <br>
 
+**The two models share the common parameters: alpha, gamma, and lambda. From the model summary the estimates of alpha and gamma are both within 0.05 of each other, with lambda having the most significant difference of ~0.19. This tells us that rate of recovery estimate is sensitive/variable based on whether you account for seasonal oscillations or not.** 
+
 ## Compare NLS models using ANOVA
 
 Modelers often want to know which of a set of models are better. One way to do this when comparing nested* models using least squares is using analysis of variance (ANOVA). In this case the `anova()` function will take the model objects as arguments, and return an ANOVA testing whether the full model results in a significant reduction in the residual sum of squares (and thus is better at capturing the data), returning an F-statistic, Degrees of Freedom (the difference in the number of parameters between the models) and p-value.
@@ -116,9 +121,13 @@ anova(fit_negexp, fit_negexpS)
 
 <br>
 
+**Based on the ANOVA results, the three stars next to model 2 indicate including seasonality is distinct enough to include this as an additional parameter as this adds new and relevant information to the simpler model, explaining more of the patterns in the data.**
+
 > Question 4: How many degrees of freedom are there in this ANOVA and why (i.e. what are they)? (3 marks)
 
 <br>
+
+**There are 2 degrees of freedom as degrees of freedom refers to the the difference in the number of parameters between the models. Model one has parameters alpha, gamma, and lambda and model two has parameters alpha, gamma, lambda, A and phi, thus parameters A and phi represent the two degrees of freedom that the ANOVA references.**
 
 ## Fit models using Maximum Likelihood Estimation (MLE)
 
@@ -211,6 +220,10 @@ AIC_simple - AIC_full
 
 <br>
 
+**The lower AIC value of 451159.3 (AIC_full / AIC of the full model)indicates that this would be the 'better' model. The difference between the simple and full models (AIC_simple - AIC_full) being 266953.8 would also indicate that these models are significantly different.**
+
+<br>
+
 The nice thing about AIC is that the models you compare do not have to be nested like they do for ANOVA, as long as the data are the same. There are a few other constraints however... 
 
 Here are the AIC scores for our pair of NLS models:
@@ -228,6 +241,8 @@ You'll notice that these are completely different to the AICs for the MLE models
 > Question 6: Why is it not okay to compare the AIC of these NLS models with the AIC of the MLE models? Hint: type `?AIC` into the R console and do some reading. (3 marks)
 
 <br>
+
+**As mentioned within the R documentation, the theory of Akaike's information criterion (AIC) requires that the log-likelihood has been maximized, and while the AIC can be computed for models not fitted by maximum likelihood, their AIC values should not be compared because they are based on different estimation criteria. Using the example of non-linear least squares (NLS) models and comparing this with Maximum Likelihood Estimation (MLE) models, NLS minimizes sum of squares, not likelihood, so the scales of the AIC values will be different, and thus not sensibly comparable. **
 
 
 ## Going Bayesian
@@ -277,6 +292,8 @@ Note that most models are too complex or too highly dimensional to calculate the
 
 > Question 7: What do the posterior density plots represent? (2 marks)
 
+**The posterior density plots represents our uncertainty (or certainty) in each of our parameters, after combining the information in the data with the prior. The the higher the mass of the distribution in one place in a plot is representative of greater certainty but the mass being more spread out indicates a greater uncertainty in the represented parameter.**
+
 <br>
 
 Now let's do the same for the full model.
@@ -321,6 +338,9 @@ plot(fit_negexpBS, ask = F)
 
 > Question 8: Assuming the full Bayesian model is the best model, would any of the parameter estimates of any of the models be significantly unlikely to be true (if you were to apply the frequentist criterion of P < 0.05), and if so, which ones? (3 marks)
 
+**No, looking at the distributions of the posterior estimates, the distributions are primarily concentrated in a certain area for each parameter, indicative of a greater certainty in these parameter estimates.**
 <br>
 
 > Question 9: Are these single-level or hierarchical Bayesian models? Which arguments to the brm() function represent which of the model levels discussed in section \@ref(datafusion)? (5 marks)
+
+**These are single-level Bayesian models, a single-level Bayes model use Bayes' theorem to combine prior distributions with observed data to derive the posterior distribution. Whereas a hierarchical Bayes model considers different levels of parameters, where parameters at each level follow their own distributions, described by hyperparameters, indicated within the code. Looking to our model, with brm() we fix all parameters (alpha, gamma, lambda, A, phi) to ~ 1 which indicates that there are not differing levels to the parameters, thus it cannot be a hierarchical model.**
